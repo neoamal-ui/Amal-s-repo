@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Total Commissions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f8fafc;
+    color: #252a31;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: auto;
+  }
+
+  .app {
+    width: 1440px;
+    min-height: 968px;
+    display: flex;
+    background: #ffffff;
+  }
+
+  /* ---------- SIDE NAV ---------- */
+  .side-nav {
+    width: 64px;
+    flex-shrink: 0;
+    background: #1c3346;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    gap: 12px;
+  }
+  .side-nav .logo {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .side-nav .logo img {
+    width: 32px;
+    height: 32px;
+    display: block;
+    object-fit: contain;
+  }
+  .side-nav .nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .side-nav .nav-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a8bc;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .side-nav .nav-item:hover {
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+  }
+  .side-nav .nav-item.active {
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+  }
+  .side-nav .nav-item svg { width: 22px; height: 22px; }
+  .side-nav .nav-spacer { flex: 1; }
+  .side-nav .nav-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+
+  /* ---------- DESIGN AREA ---------- */
+  .design {
+    flex: 1;
+    width: 1376px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+  }
+
+  /* ---------- HEADER ---------- */
+  .header {
+    height: 60px;
+    border-bottom: 1px solid #eff2f5;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: #ffffff;
+    flex-shrink: 0;
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .header-logo .lg {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .header-logo .lg img { width: 32px; height: 32px; display: block; object-fit: contain; }
+  .header-logo .menu-btn {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    color: #4f5e71;
+    cursor: pointer;
+  }
+  .header-logo .menu-btn:hover { background: #f3f4f6; }
+
+  .search-bar {
+    margin-left: auto;
+    margin-right: auto;
+    width: 330px;
+    height: 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .search-bar svg { width: 16px; height: 16px; color: #9ca3af; flex-shrink: 0; }
+  .search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+    color: #374151;
+    background: transparent;
+  }
+  .search-bar input::placeholder { color: #9ca3af; font-weight: 500; }
+  .search-bar .kbd {
+    font-size: 12px;
+    color: #9ca3af;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 1px 6px;
+    background: #f9fafb;
+    font-weight: 500;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fef3f2;
+    color: #d92d20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* ---------- TITLE + STATS BLOCK ---------- */
+  .title-stats {
+    padding: 16px 24px 12px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+  }
+  .title-row h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #252a31;
+    line-height: 1.2;
+  }
+
+  .dropdown {
+    position: relative;
+    width: 123px;
+    height: 32px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 11px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    user-select: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .dropdown:hover { border-color: #9ca3af; }
+  .dropdown.open {
+    border-color: #2e90fa;
+    box-shadow: 0 0 0 3px rgba(46,144,250,0.12);
+  }
+  .dropdown svg { width: 16px; height: 16px; color: #6b7280; transition: transform 0.18s ease; }
+  .dropdown.open svg { transform: rotate(180deg); }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 160px;
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.09);
+    padding: 6px;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    z-index: 30;
+  }
+  .dropdown-menu.open {
+    display: flex;
+    animation: dropdownIn 0.14s ease;
+  }
+
+  @keyframes dropdownIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .dropdown-item {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #374151;
+    line-height: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.1s;
+  }
+  .dropdown-item:hover { background: #f3f4f6; }
+  .dropdown-item.selected {
+    background: #eff8ff;
+    color: #1570ef;
+    font-weight: 500;
+  }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    gap: 12px;
+    padding-top: 6px;
+  }
+  .stat-card {
+    flex: 1;
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat-card.active { border-color: #2e90fa; }
+  .stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 24px;
+  }
+  .stat-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #697d95;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+  }
+  .stat-badge {
+    background: #eff8ff;
+    border: 1px solid #84caff;
+    border-radius: 18px;
+    padding: 4px;
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1570ef;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #4f5e71;
+    line-height: 1.2;
+  }
+
+  /* ---------- VIEW PANE (filter bar) ---------- */
+  .view-pane {
+    height: 56px;
+    background: #f8fafc;
+    border-bottom: 1px solid #eff2f5;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 16px;
+  }
+  .view-pane-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .filter-btn {
+    height: 32px;
+    background: #ffffff;
+    border: 1px solid #eff2f5;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px 0 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+  }
+  .filter-btn svg { width: 20px; height: 20px; color: #4f5e71; }
+
+  .filter-tags { display: flex; align-items: center; gap: 7px; }
+  .filter-tag {
+    height: 32px;
+    background: #ffffff;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px 0 8px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #697d95;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+  }
+  .filter-tag svg { width: 16px; height: 16px; color: #697d95; }
+
+  .table-search {
+    width: 160px;
+    height: 32px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 8px;
+  }
+  .table-search svg { width: 16px; height: 16px; color: #9ca3af; }
+  .table-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    font-family: inherit;
+  }
+  .table-search input::placeholder { color: #9ca3af; }
+
+  /* ---------- TABLE ---------- */
+  .body-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+  }
+
+  .table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+  .table thead tr {
+    height: 36px;
+    background: #ffffff;
+    border-bottom: 1px solid #e8edf1;
+  }
+  .table th {
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: #697d95;
+    padding: 8px 12px;
+    letter-spacing: 0.2px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .table th .th-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .table th svg { width: 14px; height: 14px; color: #9ca3af; }
+
+  .table tbody tr {
+    height: 40px;
+    border-top: 1px solid #e8edf1;
+    border-bottom: 1px solid #e8edf1;
+    background: #ffffff;
+  }
+  .table tbody tr:hover { background: #fafbfc; }
+  .table td {
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #697d95;
+    letter-spacing: 0.2px;
+    vertical-align: middle;
+    line-height: 1.4;
+  }
+
+  .col-checkbox { width: 36px; padding-left: 12px; padding-right: 4px; }
+  .col-date { width: 160px; }
+  .col-customer { width: 178px; }
+  .col-job { width: 219px; }
+  .col-commission { width: 200px; }
+  .col-payout { width: 154px; }
+  .col-status { width: 134px; }
+  .col-remarks { width: 159px; }
+  .col-action { width: 136px; }
+
+  .checkbox {
+    width: 16.67px;
+    height: 16.67px;
+    border: 1.25px solid #bac7d5;
+    border-radius: 6px;
+    background: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .checkbox.checked {
+    background: #2e90fa;
+    border-color: #2e90fa;
+    position: relative;
+  }
+  .checkbox.checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .customer-cell { display: flex; align-items: center; gap: 6px; }
+  .customer-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.2px solid #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+  .a1 { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .a2 { background: linear-gradient(135deg, #ec4899, #db2777); }
+  .a3 { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+  .a4 { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+  .a5 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+  .a6 { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+  .a7 { background: linear-gradient(135deg, #eab308, #ca8a04); }
+  .a8 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+  .a9 { background: linear-gradient(135deg, #84cc16, #65a30d); }
+  .a10 { background: linear-gradient(135deg, #f43f5e, #be123c); }
+  .a11 { background: linear-gradient(135deg, #6366f1, #4338ca); }
+  .a12 { background: linear-gradient(135deg, #d946ef, #a21caf); }
+  .a13 { background: linear-gradient(135deg, #10b981, #047857); }
+  .a14 { background: linear-gradient(135deg, #f59e0b, #b45309); }
+
+  .job-link {
+    color: #4b5563;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .job-link:hover { color: #1570ef; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    max-height: 20px;
+  }
+  .badge-paid { background: #ecfdf3; border: 1px solid #6ce9a6; color: #039855; }
+  .badge-partial { background: #fffaeb; border: 1px solid #fec84b; color: #dc6803; }
+  .badge-unpaid { background: #fef3f2; border: 1px solid #fda29b; color: #d92d20; }
+
+  .payout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 32px;
+    padding: 6px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    color: #3c82f6;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .payout-btn:hover { background: #eff8ff; }
+  .payout-btn svg { width: 16px; height: 16px; }
+
+  /* ---------- PAGINATION ---------- */
+  .pagination {
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    border-top: 1px solid #e8edf1;
+    flex-shrink: 0;
+    background: #ffffff;
+  }
+  .pagi-left { display: flex; align-items: center; gap: 40px; }
+  .items-per-page { display: flex; align-items: center; gap: 8px; }
+  .items-per-page .label {
+    font-size: 14px;
+    color: #697d95;
+    letter-spacing: 0.2px;
+  }
+  .ipp-btn {
+    width: 70px;
+    height: 32px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+  }
+  .ipp-btn svg { width: 18px; height: 18px; color: #6b7280; }
+
+  .pagi-nav { display: flex; align-items: center; gap: 20px; }
+  .pagi-nav .label { font-size: 14px; color: #697d95; letter-spacing: 0.2px; }
+  .pagi-arrows { display: flex; align-items: center; gap: 20px; }
+  .pagi-btn {
+    width: 24px; height: 24px;
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    color: #4f5e71;
+    cursor: pointer;
+  }
+  .pagi-btn:hover { background: #f3f4f6; }
+  .pagi-btn:disabled { color: #d1d5db; cursor: not-allowed; }
+  .pagi-btn:disabled:hover { background: transparent; }
+  .pagi-btn svg { width: 18px; height: 18px; }
+
+  .pagi-right { display: flex; align-items: center; gap: 40px; }
+  .go-to { display: flex; align-items: center; gap: 8px; }
+  .go-to .label { font-size: 14px; color: #697d95; letter-spacing: 0.2px; }
+  .go-to-input {
+    width: 80px;
+    height: 38px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    padding: 0 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #374151;
+    outline: none;
+  }
+  .go-to-input:focus { border-color: #2e90fa; }
+
+  .export-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px;
+    background: transparent;
+    border: none;
+    color: #3c82f6;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .export-btn:hover { background: #eff8ff; }
+  .export-btn svg { width: 20px; height: 20px; }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 460px;
+    max-width: 100%;
+    box-shadow: 0 4.8px 14.4px rgba(0,0,0,0.18), 0 25.6px 57.6px rgba(0,0,0,0.22);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(8px);
+    opacity: 0;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+  }
+  .modal-overlay.open .modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .modal-title {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .modal-title h2 {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.235;
+    letter-spacing: 0.15px;
+    margin: 0;
+  }
+  .modal-close {
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+  .modal-close:hover { color: #1f2937; }
+  .modal-close svg { width: 20px; height: 20px; }
+  .modal-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    line-height: 20px;
+  }
+  .field-input {
+    width: 100%;
+    height: 32px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1f2937;
+    letter-spacing: 0.2px;
+    outline: none;
+    background: #ffffff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field-input:focus {
+    border-color: #2e90fa;
+    box-shadow: 0 0 0 3px rgba(46,144,250,0.12);
+  }
+  .field-input.error {
+    border-color: #d92d20;
+    box-shadow: 0 0 0 3px rgba(217,45,32,0.10);
+  }
+  .field-error {
+    font-size: 12px;
+    color: #d92d20;
+    margin-top: 2px;
+    min-height: 16px;
+  }
+  .field-date {
+    position: relative;
+  }
+  .field-date input {
+    padding-right: 36px;
+  }
+  .field-date svg {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #6b7280;
+    pointer-events: none;
+  }
+  .field-textarea {
+    width: 100%;
+    min-height: 64px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 5px 11px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #1f2937;
+    line-height: 20px;
+    outline: none;
+    resize: vertical;
+    background: #ffffff;
+  }
+  .field-textarea:focus {
+    border-color: #2e90fa;
+    box-shadow: 0 0 0 3px rgba(46,144,250,0.12);
+  }
+  .field-textarea::placeholder { color: #9ca3af; }
+
+  .remaining-pill {
+    background: #d1e9ff;
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.07px;
+  }
+  .remaining-pill .label {
+    font-weight: 500;
+    color: #374151;
+  }
+  .remaining-pill .value {
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #f3f4f6;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 0 16px;
+  }
+  .btn {
+    height: 32px;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    font-family: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-secondary {
+    background: #ffffff;
+    border-color: #d1d5db;
+    color: #1f2937;
+  }
+  .btn-secondary:hover { background: #f9fafb; }
+  .btn-primary {
+    background: #e44a19;
+    color: #ffffff;
+  }
+  .btn-primary:hover { background: #c93e12; }
+  .btn-primary:disabled {
+    background: #f3a48a;
+    cursor: not-allowed;
+  }
+  .btn-danger {
+    background: #d21c1c;
+    color: #ffffff;
+  }
+  .btn-danger:hover { background: #b01717; }
+
+  /* Clickable stat cards */
+  .stat-card {
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    user-select: none;
+  }
+  .stat-card:hover {
+    border-color: #84caff;
+    box-shadow: 0 1px 3px rgba(46,144,250,0.18);
+  }
+  .stat-card:active { transform: translateY(1px); }
+  .stat-card.active {
+    border-color: #2e90fa;
+    box-shadow: 0 0 0 3px rgba(46,144,250,0.12);
+  }
+
+  /* Bulk action bar — floats at bottom-center of the table */
+  .body-area { position: relative; }
+  .bulk-bar-wrap {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    z-index: 50;
+  }
+  .bulk-bar {
+    pointer-events: auto;
+    background: #1f2937;
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.22), 0 4px 8px rgba(15, 23, 42, 0.12);
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 6px 6px 14px;
+    font-size: 14px;
+    transform: translateY(8px);
+    opacity: 0;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+  }
+  .bulk-bar.show {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .bulk-count {
+    font-weight: 500;
+    padding-right: 12px;
+    border-right: 1px solid rgba(255,255,255,0.18);
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .bulk-count strong {
+    background: #2e90fa;
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-right: 6px;
+    font-weight: 600;
+  }
+  .bulk-btn {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+  .bulk-btn:hover { background: rgba(255,255,255,0.10); }
+  .bulk-btn svg { width: 16px; height: 16px; }
+  .bulk-btn.danger { color: #fda29b; }
+  .bulk-btn.danger:hover { background: rgba(217, 45, 32, 0.18); color: #fecdca; }
+  .bulk-close {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+  }
+  .bulk-close:hover { background: rgba(255,255,255,0.10); color: #fff; }
+  .bulk-close svg { width: 16px; height: 16px; }
+
+  /* Confirmation modal (Mark as Unpaid) — narrower body, no fields */
+  .modal.confirm { width: 544px; }
+  .modal-confirm-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+  }
+  .featured-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 28px;
+    background: #fee4e2;
+    border: 8px solid #fef3f2;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d92d20;
+    flex-shrink: 0;
+  }
+  .featured-icon svg { width: 24px; height: 24px; }
+  .modal-confirm-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .modal-confirm-text h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.2;
+    margin: 0;
+  }
+  .modal-confirm-text p {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4f5e71;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+    margin: 0;
+  }
+
+  /* ---------- DROPDOWN MENU (Date range) ---------- */
+  .dropdown-wrapper {
+    position: relative;
+  }
+
+
+</style>
+
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============== SIDE NAV ============== -->
+  <aside class="side-nav">
+    <div class="logo"><img src="data:image/png;base64,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" alt="Zuper" /></div>
+    <nav class="nav-items">
+      <div class="nav-item" title="Home">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/></svg>
+      </div>
+      <div class="nav-item" title="Jobs">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7h-4V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-6 0h-4V5h4v2z"/></svg>
+      </div>
+      <div class="nav-item" title="Scheduling">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="nav-item" title="Customers">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="nav-item" title="Estimates">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="nav-item active" title="Commissions">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-.8-1.5-1.3-2.5-1.3-1.7 0-3 1.1-3 2.5s1.3 2.5 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5c-1 0-2-.5-2.5-1.3"/><line x1="12" y1="6" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="18"/></svg>
+      </div>
+      <div class="nav-item" title="Parts &amp; Services">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      </div>
+      <div class="nav-item" title="Reports">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>
+      </div>
+      <div class="nav-item" title="Messaging">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+    </nav>
+    <div class="nav-spacer"></div>
+    <div class="nav-bottom">
+      <div class="nav-item" title="Help">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="nav-item" title="Settings">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============== MAIN ============== -->
+  <main class="design">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-logo">
+        <div class="lg">
+          <img src="data:image/png;base64,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" alt="Zuper" />
+        </div>
+        <button class="menu-btn" aria-label="Menu">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="search-bar">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search anything...">
+        <span class="kbd">⌘K</span>
+      </div>
+
+      <div class="avatar">BH</div>
+    </header>
+
+    <!-- TITLE + STATS -->
+    <section class="title-stats">
+      <div class="title-row">
+        <h1>Commissions</h1>
+        <div class="dropdown-wrapper">
+          <div class="dropdown" id="periodDropdown" role="button" aria-haspopup="listbox" aria-expanded="false" tabindex="0">
+            <span id="periodLabel">This Month</span>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="dropdown-menu" role="listbox" id="periodMenu">
+            <div class="dropdown-item" role="option" data-value="Today">Today</div>
+            <div class="dropdown-item" role="option" data-value="Yesterday">Yesterday</div>
+            <div class="dropdown-item" role="option" data-value="Last 7 Days">Last 7 Days</div>
+            <div class="dropdown-item" role="option" data-value="Last 30 Days">Last 30 Days</div>
+            <div class="dropdown-item selected" role="option" data-value="This Month">This Month</div>
+            <div class="dropdown-item" role="option" data-value="Last Month">Last Month</div>
+            <div class="dropdown-item" role="option" data-value="Custom Range">Custom Range</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card active" data-filter="all">
+          <div class="stat-header">
+            <span class="stat-title">Total Commissions</span>
+            <span class="stat-badge">32</span>
+          </div>
+          <div class="stat-value">$16,854.59</div>
+        </div>
+        <div class="stat-card" data-filter="paid">
+          <div class="stat-header">
+            <span class="stat-title">Total Paid</span>
+            <span class="stat-badge">10</span>
+          </div>
+          <div class="stat-value">$14,894.35</div>
+        </div>
+        <div class="stat-card" data-filter="unpaid">
+          <div class="stat-header">
+            <span class="stat-title">Total Unpaid</span>
+            <span class="stat-badge">10</span>
+          </div>
+          <div class="stat-value">$2,100.35</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW PANE / FILTERS -->
+    <section class="view-pane">
+      <div class="view-pane-left">
+        <button class="filter-btn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <span>Filter</span>
+        </button>
+        <div class="filter-tags">
+          <button class="filter-tag">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Date Requested</span>
+          </button>
+          <button class="filter-tag">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Amount</span>
+          </button>
+          <button class="filter-tag">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>User Name</span>
+          </button>
+        </div>
+      </div>
+      <div class="table-search">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search">
+      </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="body-area">
+      <table class="table">
+        <colgroup>
+          <col class="col-checkbox">
+          <col class="col-date">
+          <col class="col-customer">
+          <col class="col-job">
+          <col class="col-commission">
+          <col class="col-payout">
+          <col class="col-status">
+          <col class="col-remarks">
+          <col class="col-action">
+        </colgroup>
+        <thead>
+          <tr>
+            <th><span class="checkbox" id="masterCheck"></span></th>
+            <th><span class="th-content">Date <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+            <th><span class="th-content">User <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+            <th><span class="th-content">Job <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+            <th><span class="th-content">Commission $ <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+            <th><span class="th-content">Total Payout <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span></th>
+            <th>Payment status</th>
+            <th>Remarks</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- rows injected by JS -->
+        </tbody>
+      </table>
+
+      <!-- Bulk action bar — appears when rows are selected -->
+      <div class="bulk-bar-wrap">
+        <div class="bulk-bar" id="bulkBar" role="toolbar" aria-label="Bulk actions">
+          <span class="bulk-count"><strong id="bulkCount">0</strong>selected</span>
+          <button class="bulk-btn" id="bulkMarkPaid">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Mark as Paid
+          </button>
+          <button class="bulk-btn danger" id="bulkMarkUnpaid">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            Mark as Unpaid
+          </button>
+          <button class="bulk-close" id="bulkClose" aria-label="Clear selection">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+    <footer class="pagination">
+      <div class="pagi-left">
+        <div class="items-per-page">
+          <span class="label">Items per page:</span>
+          <button class="ipp-btn">
+            <span>15</span>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="pagi-nav">
+          <span class="label">Page 1 of 5</span>
+          <div class="pagi-arrows">
+            <button class="pagi-btn" disabled aria-label="First"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg></button>
+            <button class="pagi-btn" disabled aria-label="Previous"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="pagi-btn" aria-label="Next"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button class="pagi-btn" aria-label="Last"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="pagi-right">
+        <div class="go-to">
+          <span class="label">Go to:</span>
+          <input type="text" class="go-to-input" value="1">
+        </div>
+        <button class="export-btn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Export</span>
+        </button>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- ============== MARK AS PAID MODAL (bulk) ============== -->
+<div class="modal-overlay" id="markPaidModal" role="dialog" aria-modal="true" aria-labelledby="markPaidTitle">
+  <div class="modal" role="document">
+    <div class="modal-title">
+      <h2 id="markPaidTitle">Mark as Paid</h2>
+      <button class="modal-close" id="markPaidClose" aria-label="Close">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-label" for="paidDate">Payment Date</label>
+        <div class="field-date">
+          <input type="date" id="paidDate" class="field-input">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="paidRemark">Remark</label>
+        <textarea id="paidRemark" class="field-textarea" placeholder="Add remark"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="markPaidCancel">Cancel</button>
+      <button class="btn btn-primary" id="markPaidSubmit">Mark as Paid</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== MARK AS UNPAID MODAL (bulk confirmation) ============== -->
+<div class="modal-overlay" id="markUnpaidModal" role="dialog" aria-modal="true" aria-labelledby="markUnpaidTitle">
+  <div class="modal confirm" role="document">
+    <div class="modal-confirm-body">
+      <div class="featured-icon" aria-hidden="true">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="modal-confirm-text">
+        <h2 id="markUnpaidTitle">Mark <span id="unpaidCount">0</span> commissions as unpaid?</h2>
+        <p>This will reverse the paid status for the selected commissions and remove associated payouts.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="markUnpaidCancel">Cancel</button>
+      <button class="btn btn-danger" id="markUnpaidSubmit">Mark as Unpaid</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== ADD PAYOUT MODAL ============== -->
+<div class="modal-overlay" id="payoutModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" role="document">
+    <div class="modal-title">
+      <h2 id="modalTitle">Add Payout</h2>
+      <button class="modal-close" id="modalClose" aria-label="Close">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-label" for="payDate">Payment Date</label>
+        <div class="field-date">
+          <input type="date" id="payDate" class="field-input">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="payAmount">Amount</label>
+        <input type="text" id="payAmount" class="field-input" inputmode="decimal" placeholder="0.00">
+        <div class="field-error" id="payAmountError"></div>
+      </div>
+      <div class="remaining-pill">
+        <span class="label">Remaining</span>
+        <span class="value" id="payRemaining">$0.00</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="payRemark">Remark</label>
+        <textarea id="payRemark" class="field-textarea" placeholder="Add Remark"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalSubmit">Add Payout</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // -------- Data with structured numeric fields --------
+  const rows = [
+    {date:'12/15/2025', name:'John Smith',        job:'Kitchen Renovation',   commission:2450.00, paid:2450.00},
+    {date:'01/10/2026', name:'Emily Johnson',     job:'Bathroom Remodel',     commission:3200.00, paid:1600.00},
+    {date:'02/20/2026', name:'Michael Brown',     job:'Living Room Update',   commission:1800.00, paid:1800.00},
+    {date:'03/15/2026', name:'Sarah Davis',       job:'Deck Installation',    commission:4500.00, paid:2250.00},
+    {date:'04/05/2026', name:'David Wilson',      job:'Roof Repair',          commission:5000.00, paid:5000.00},
+    {date:'05/22/2026', name:'Laura Garcia',      job:'Basement Finishing',   commission:7800.00, paid:3000.00},
+    {date:'06/30/2026', name:'Chris Martinez',    job:'Garage Conversion',    commission:6200.00, paid:0},
+    {date:'07/18/2026', name:'Jessica Anderson',  job:'Window Replacement',   commission:2100.00, paid:2100.00},
+    {date:'08/25/2026', name:'Daniel Lee',        job:'Siding Installation',  commission:4000.00, paid:1500.00},
+    {date:'09/12/2026', name:'Michelle Perez',    job:'Flooring Upgrade',     commission:3500.00, paid:0},
+    {date:'10/30/2026', name:'Kevin Thomas',      job:'Outdoor Lighting',     commission:1200.00, paid:1200.00},
+    {date:'11/15/2026', name:'Angela Hernandez',  job:'HVAC Installation',    commission:8000.00, paid:4000.00},
+    {date:'12/20/2026', name:'Brian King',        job:'Interior Painting',    commission:2300.00, paid:0},
+    {date:'01/28/2027', name:'Samantha Wright',   job:'Fencing Installation', commission:1800.00, paid:1800.00},
+    {date:'02/14/2027', name:'Ryan Young',        job:'Pool Renovation',      commission:9000.00, paid:4500.00},
+  ];
+
+  const statusBadge = {
+    paid:    {cls:'badge-paid',    label:'Paid'},
+    partial: {cls:'badge-partial', label:'Partially Paid'},
+    unpaid:  {cls:'badge-unpaid',  label:'Unpaid'}
+  };
+
+  function fmtMoney(n) {
+    return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function getStatus(row) {
+    if (row.paid <= 0) return 'unpaid';
+    if (row.paid >= row.commission - 0.005) return 'paid';
+    return 'partial';
+  }
+
+  function initials(name) {
+    return name.split(' ').map(p => p[0]).slice(0,2).join('').toUpperCase();
+  }
+
+  const cashIcon = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>`;
+
+  // -------- Render table --------
+  const tbody = document.getElementById('tableBody');
+  let activeFilter = 'all'; // 'all' | 'paid' | 'unpaid'
+  // Track checked rows by source-index in the rows[] array (so filter changes don't lose state)
+  const checkedSet = new Set();
+
+  function rowMatchesFilter(r) {
+    const s = getStatus(r);
+    if (activeFilter === 'all')    return true;
+    if (activeFilter === 'paid')   return s === 'paid';
+    if (activeFilter === 'unpaid') return s !== 'paid'; // partial + unpaid both count as not-fully-paid
+    return true;
+  }
+
+  function renderRows() {
+    tbody.innerHTML = '';
+    let visibleCount = 0;
+    rows.forEach((r, i) => {
+      if (!rowMatchesFilter(r)) return;
+      visibleCount++;
+      const status = getStatus(r);
+      const b = statusBadge[status];
+      const avatarClass = 'a' + ((i % 14) + 1);
+      const isFullyPaid = status === 'paid';
+      const isChecked = checkedSet.has(i);
+      const tr = document.createElement('tr');
+      tr.dataset.idx = i;
+      tr.innerHTML = `
+        <td><span class="checkbox row-check ${isChecked ? 'checked' : ''}"></span></td>
+        <td>${r.date}</td>
+        <td>
+          <div class="customer-cell">
+            <div class="customer-avatar ${avatarClass}">${initials(r.name)}</div>
+            <span>${r.name}</span>
+          </div>
+        </td>
+        <td><a class="job-link" href="#">${r.job}</a></td>
+        <td>${fmtMoney(r.commission)}</td>
+        <td>${fmtMoney(r.paid)}</td>
+        <td><span class="badge ${b.cls}">${b.label}</span></td>
+        <td>${r.remark ? r.remark : '-'}</td>
+        <td>
+          <button class="payout-btn" data-idx="${i}" ${isFullyPaid ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>
+            ${cashIcon}<span>Payout</span>
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    if (visibleCount === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="9" style="text-align:center;padding:48px 12px;color:#697d95;font-size:14px;">No commissions match this filter.</td>`;
+      tbody.appendChild(tr);
+    }
+
+    // Wire row checkboxes
+    tbody.querySelectorAll('.row-check').forEach(cb => {
+      cb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const tr = cb.closest('tr');
+        const idx = parseInt(tr.dataset.idx, 10);
+        if (cb.classList.contains('checked')) {
+          cb.classList.remove('checked');
+          checkedSet.delete(idx);
+        } else {
+          cb.classList.add('checked');
+          checkedSet.add(idx);
+        }
+        updateBulkBar();
+        updateMasterCheckbox();
+      });
+    });
+
+    // Wire payout buttons
+    tbody.querySelectorAll('.payout-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        openModal(parseInt(btn.dataset.idx, 10));
+      });
+    });
+
+    updateStats();
+    updateMasterCheckbox();
+    updateBulkBar();
+  }
+
+  // -------- Stats update --------
+  function updateStats() {
+    const totalCom = rows.reduce((s, r) => s + r.commission, 0);
+    const totalPaid = rows.reduce((s, r) => s + r.paid, 0);
+    const totalUnpaid = totalCom - totalPaid;
+    const paidCount = rows.filter(r => getStatus(r) === 'paid').length;
+    const unpaidCount = rows.filter(r => getStatus(r) !== 'paid').length;
+
+    const cards = document.querySelectorAll('.stat-card');
+    if (cards.length === 3) {
+      cards[0].querySelector('.stat-value').textContent = fmtMoney(totalCom);
+      cards[0].querySelector('.stat-badge').textContent = rows.length;
+      cards[1].querySelector('.stat-value').textContent = fmtMoney(totalPaid);
+      cards[1].querySelector('.stat-badge').textContent = paidCount;
+      cards[2].querySelector('.stat-value').textContent = fmtMoney(totalUnpaid);
+      cards[2].querySelector('.stat-badge').textContent = unpaidCount;
+    }
+  }
+
+  // -------- Stat card filtering --------
+  document.querySelectorAll('.stat-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const f = card.dataset.filter;
+      activeFilter = f;
+      document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      renderRows();
+    });
+  });
+
+  // -------- Modal logic --------
+  const modal     = document.getElementById('payoutModal');
+  const inpDate   = document.getElementById('payDate');
+  const inpAmount = document.getElementById('payAmount');
+  const inpRemark = document.getElementById('payRemark');
+  const errAmt    = document.getElementById('payAmountError');
+  const remainEl  = document.getElementById('payRemaining');
+  let activeIdx   = null;
+
+  function todayISO() {
+    const d = new Date();
+    return d.toISOString().slice(0, 10);
+  }
+
+  function openModal(idx) {
+    activeIdx = idx;
+    const r = rows[idx];
+    const remaining = r.commission - r.paid;
+
+    inpDate.value = todayISO();
+    inpAmount.value = remaining.toFixed(2);
+    inpRemark.value = '';
+    errAmt.textContent = '';
+    inpAmount.classList.remove('error');
+    remainEl.textContent = fmtMoney(remaining);
+
+    modal.classList.add('open');
+    setTimeout(() => inpAmount.focus(), 50);
+    inpAmount.select();
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    activeIdx = null;
+  }
+
+  // Live-update remaining preview as user types
+  inpAmount.addEventListener('input', () => {
+    if (activeIdx === null) return;
+    const r = rows[activeIdx];
+    const entered = parseFloat(inpAmount.value);
+    const outstanding = r.commission - r.paid;
+    if (!isNaN(entered) && entered > 0) {
+      const newRemaining = Math.max(0, outstanding - entered);
+      remainEl.textContent = fmtMoney(newRemaining);
+    } else {
+      remainEl.textContent = fmtMoney(outstanding);
+    }
+
+    // Clear error on edit
+    inpAmount.classList.remove('error');
+    errAmt.textContent = '';
+  });
+
+  function submitPayout() {
+    if (activeIdx === null) return;
+    const r = rows[activeIdx];
+    const outstanding = r.commission - r.paid;
+    const entered = parseFloat(inpAmount.value);
+
+    if (isNaN(entered) || entered <= 0) {
+      inpAmount.classList.add('error');
+      errAmt.textContent = 'Please enter a valid amount greater than 0.';
+      return;
+    }
+    if (entered > outstanding + 0.005) {
+      inpAmount.classList.add('error');
+      errAmt.textContent = `Amount cannot exceed the remaining ${fmtMoney(outstanding)}.`;
+      return;
+    }
+
+    // Apply the payout
+    r.paid = Math.min(r.commission, r.paid + entered);
+    if (inpRemark.value.trim()) {
+      r.remark = inpRemark.value.trim();
+    }
+
+    closeModal();
+    renderRows();
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('modalSubmit').addEventListener('click', submitPayout);
+
+  // Close on overlay click (but not when clicking the modal itself)
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Esc to close, Enter to submit
+  document.addEventListener('keydown', (e) => {
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Enter' && document.activeElement !== inpRemark) {
+      e.preventDefault();
+      submitPayout();
+    }
+  });
+
+  // -------- Master checkbox --------
+  // Master toggles all currently *visible* rows (respects active filter).
+  const masterCheck = document.getElementById('masterCheck');
+  masterCheck.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const visibleRows = tbody.querySelectorAll('tr[data-idx]');
+    const visibleIdxs = Array.from(visibleRows).map(tr => parseInt(tr.dataset.idx, 10));
+    const allChecked = visibleIdxs.length > 0 && visibleIdxs.every(i => checkedSet.has(i));
+    if (allChecked) {
+      visibleIdxs.forEach(i => checkedSet.delete(i));
+    } else {
+      visibleIdxs.forEach(i => checkedSet.add(i));
+    }
+    // Reflect new state in DOM
+    tbody.querySelectorAll('.row-check').forEach(cb => {
+      const idx = parseInt(cb.closest('tr').dataset.idx, 10);
+      cb.classList.toggle('checked', checkedSet.has(idx));
+    });
+    updateMasterCheckbox();
+    updateBulkBar();
+  });
+
+  function updateMasterCheckbox() {
+    const visibleRows = tbody.querySelectorAll('tr[data-idx]');
+    if (visibleRows.length === 0) {
+      masterCheck.classList.remove('checked');
+      return;
+    }
+    const visibleIdxs = Array.from(visibleRows).map(tr => parseInt(tr.dataset.idx, 10));
+    const allChecked = visibleIdxs.every(i => checkedSet.has(i));
+    masterCheck.classList.toggle('checked', allChecked);
+  }
+
+  // -------- Bulk action bar --------
+  const bulkBar    = document.getElementById('bulkBar');
+  const bulkCount  = document.getElementById('bulkCount');
+  const bulkClose  = document.getElementById('bulkClose');
+
+  function updateBulkBar() {
+    const n = checkedSet.size;
+    if (n === 0) {
+      bulkBar.classList.remove('show');
+    } else {
+      bulkCount.textContent = n;
+      bulkBar.classList.add('show');
+    }
+  }
+
+  function clearSelection() {
+    checkedSet.clear();
+    tbody.querySelectorAll('.row-check.checked').forEach(c => c.classList.remove('checked'));
+    masterCheck.classList.remove('checked');
+    updateBulkBar();
+  }
+
+  bulkClose.addEventListener('click', clearSelection);
+
+  // -------- Mark as Paid (bulk) modal --------
+  const markPaidModal  = document.getElementById('markPaidModal');
+  const paidDate       = document.getElementById('paidDate');
+  const paidRemark     = document.getElementById('paidRemark');
+
+  document.getElementById('bulkMarkPaid').addEventListener('click', () => {
+    if (checkedSet.size === 0) return;
+    paidDate.value = todayISO();
+    paidRemark.value = '';
+    markPaidModal.classList.add('open');
+  });
+
+  function closeMarkPaid() { markPaidModal.classList.remove('open'); }
+  document.getElementById('markPaidClose').addEventListener('click', closeMarkPaid);
+  document.getElementById('markPaidCancel').addEventListener('click', closeMarkPaid);
+  markPaidModal.addEventListener('click', (e) => { if (e.target === markPaidModal) closeMarkPaid(); });
+
+  document.getElementById('markPaidSubmit').addEventListener('click', () => {
+    // Mark every selected row as fully paid
+    const remarkText = paidRemark.value.trim();
+    checkedSet.forEach(idx => {
+      const r = rows[idx];
+      r.paid = r.commission;
+      if (remarkText) r.remark = remarkText;
+    });
+    closeMarkPaid();
+    clearSelection();
+    renderRows();
+  });
+
+  // -------- Mark as Unpaid (bulk confirmation) modal --------
+  const markUnpaidModal = document.getElementById('markUnpaidModal');
+  const unpaidCountEl   = document.getElementById('unpaidCount');
+
+  document.getElementById('bulkMarkUnpaid').addEventListener('click', () => {
+    if (checkedSet.size === 0) return;
+    unpaidCountEl.textContent = checkedSet.size;
+    markUnpaidModal.classList.add('open');
+  });
+
+  function closeMarkUnpaid() { markUnpaidModal.classList.remove('open'); }
+  document.getElementById('markUnpaidCancel').addEventListener('click', closeMarkUnpaid);
+  markUnpaidModal.addEventListener('click', (e) => { if (e.target === markUnpaidModal) closeMarkUnpaid(); });
+
+  document.getElementById('markUnpaidSubmit').addEventListener('click', () => {
+    // Reverse paid status: zero out paid amount for each selected row
+    checkedSet.forEach(idx => {
+      const r = rows[idx];
+      r.paid = 0;
+      delete r.remark;
+    });
+    closeMarkUnpaid();
+    clearSelection();
+    renderRows();
+  });
+
+  // Esc closes any open modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (markPaidModal.classList.contains('open'))   closeMarkPaid();
+    if (markUnpaidModal.classList.contains('open')) closeMarkUnpaid();
+  });
+
+  // -------- Period dropdown --------
+  const periodDropdown = document.getElementById('periodDropdown');
+  const periodMenu     = document.getElementById('periodMenu');
+  const periodLabel    = document.getElementById('periodLabel');
+  const periodWrapper  = periodDropdown.parentElement;
+
+  function openPeriod() {
+    periodDropdown.classList.add('open');
+    periodMenu.classList.add('open');
+    periodDropdown.setAttribute('aria-expanded', 'true');
+  }
+  function closePeriod() {
+    periodDropdown.classList.remove('open');
+    periodMenu.classList.remove('open');
+    periodDropdown.setAttribute('aria-expanded', 'false');
+  }
+
+  // Toggle on trigger click
+  periodDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (periodMenu.classList.contains('open')) {
+      closePeriod();
+    } else {
+      openPeriod();
+    }
+  });
+
+  // Keyboard activation on trigger
+  periodDropdown.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (periodMenu.classList.contains('open')) closePeriod(); else openPeriod();
+    }
+  });
+
+  // Item selection
+  periodMenu.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const value = item.dataset.value;
+      periodLabel.textContent = value;
+      periodMenu.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      closePeriod();
+      // (Filtering by date range would happen here in a real app)
+    });
+  });
+
+  // Close on outside click (anywhere outside the wrapper)
+  document.addEventListener('click', (e) => {
+    if (!periodWrapper.contains(e.target)) {
+      closePeriod();
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && periodMenu.classList.contains('open')) {
+      closePeriod();
+    }
+  });
+
+  // Initial render
+  renderRows();
+</script>
+
+</body>
+</html>
